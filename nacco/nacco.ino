@@ -6,8 +6,9 @@ bool flagpressOLong = false;
 bool flagpressCLong = false;
 bool flagpressO = false;
 bool flagpressC = false;
-bool flag4 = false;
-bool flag5 = false;
+bool flagJalanO = false;
+bool flagJalanC = false;
+//bool flagCloseO = false;
 unsigned long OSPress = 0;//open switch press
 unsigned long OSRelease = 0;//open switch release
 unsigned long CSPress = 0;//open switch press
@@ -15,6 +16,8 @@ unsigned long CSRelease = 0;//open switch release
 unsigned long masaTekanO;
 unsigned long masaTekanC;
 unsigned long masa = 500;
+unsigned long masaRun = 2000;
+
 
 void setup() {
   Serial.begin(9600);
@@ -39,8 +42,8 @@ void loop() {
   else if (digitalRead(openSwitchPin) == HIGH&&flagpressO==true)
        {
                   OSRelease=millis(); 
-                  if(flagpressOLong==false){Serial.println("tekan kejap je Open");}
-                  else {Serial.println("open dilepaskan");}
+                  if(flagpressOLong==false){Serial.println("tekan kejap je Open");flagJalanO=true;}
+                  else {Serial.println("open dilepaskan");delay(50);}
                   flagpressOLong=flagpressO=false;
        }
   // habis progrman open
@@ -56,8 +59,8 @@ void loop() {
   else if(digitalRead(closeSwitchPin) == HIGH&&flagpressC==true)
       { 
                   CSRelease=millis(); 
-                  if(flagpressCLong==false){Serial.println("tekan kejap je Close");}
-                  else {Serial.println("open dilepaskan");}
+                  if(flagpressCLong==false){Serial.println("tekan kejap je Close");flagJalanC=true;}
+                  else {Serial.println("open dilepaskan");delay(50);}
                   flagpressCLong=flagpressC=false;
                   
       }
@@ -67,6 +70,7 @@ void loop() {
         {
          Serial.println("Open lama");
          flagpressOLong=true;
+         flagJalanO==false;
         }
         // nk cek tekan open lama ke cepat tamat
     
@@ -77,16 +81,19 @@ void loop() {
         }
         // nk cek tekan close lama ke cepat tamat
 
+    //ni nak auto tutup ikut masa
+    if(flagJalanO==true && millis()-OSPress>masaRun)
+      {
+        Serial.println("Auto stop open");
+        flagJalanO=false;
+      }
 
-        
-                           
-  //if (digitalRead(openSwitchPin) == HIGH&&flagpressO==true) {flagpressO=false;OSRelease = millis();}
-
-  //if(millis()-OSPress>pre&&openSwitchPin==LOW){stt();ope();flag5=true;Serial.println("open jalan d tekan");}
-  //else if (millis()-OSPress<pre&&openSwitchPin==LOW){stt();ope();flag4=true;Serial.println("jalan terus open");}
-
-  
-  //if(flag4==true&&millis()-OSRelease>masa){stp();flag4=false;Serial.println("stop terus open");}
+    if(flagJalanC==true && millis()-CSPress>masaRun)
+      {
+        Serial.println("Auto stop close");
+        flagJalanC=false;
+      } 
+      //ni nak auto tutup ikut masa tamat     
   
 }
 
