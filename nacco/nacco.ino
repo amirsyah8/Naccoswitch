@@ -37,6 +37,7 @@ void loop() {
           Serial.println("Tekan open");
           OSPress = millis(); //simpan masa mula
           flagpressO=true; // tukar status flag open
+          flagJalanC=false;
           flagpressC = flagpressOLong= false; // flase kan semua
           delay(100);
         }
@@ -61,6 +62,7 @@ void loop() {
           Serial.println("Tekan close");
           CSPress = millis(); //simpan masa mula
           flagpressC=true;
+          flagJalanO=false;
           flagpressO = flagpressCLong=false;
           delay(100);
       }
@@ -117,8 +119,3 @@ void loop() {
       //ni nak auto tutup ikut masa tamat     
   
 }
-
-void startMoto(){digitalWrite(power, HIGH);}//open ok, transistor 1 ok
-void stopMoto(){digitalWrite(power, LOW);}// xde power
-void openLv(){digitalWrite(change, HIGH);}//open ,transistor 2 okk, for change
-void closeLv(){digitalWrite(change, LOW);}// xde power
