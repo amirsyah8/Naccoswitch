@@ -8,6 +8,8 @@ bool flagpressO = false;
 bool flagpressC = false;
 bool flagJalanO = false;
 bool flagJalanC = false;
+//bool nextPressC = false;
+//bool nextPressO = false;
 //bool flagCloseO = false;
 unsigned long OSPress = 0;//open switch press
 unsigned long OSRelease = 0;//open switch release
@@ -38,19 +40,25 @@ void loop() {
           OSPress = millis(); //simpan masa mula
           flagpressO=true; // tukar status flag open
           flagJalanC=false;
-          flagpressC = flagpressOLong= false; // flase kan semua
-          delay(100);
+          flagpressC = flagpressOLong= false; // flase kan semu 
+     delay(100);
         }
   else if (digitalRead(openSwitchPin) == LOW &&flagpressO==true)//ASAL SWITH HIGH
        {
                   OSRelease=millis(); 
-                  if(flagpressOLong==false)
+                  if(flagpressOLong==false&&flagJalanO==false)
                       {
                         Serial.println("tekan kejap je Open");
                         digitalWrite(power, HIGH);
                         digitalWrite(change, HIGH);
                         flagJalanO=true;
                       }
+                  else if(flagJalanO==true)
+                        {
+                          Serial.println("next tekan open");
+                          digitalWrite(power, LOW);
+                          flagJalanO=false;
+                        }
                   else {Serial.println("open dilepaskan");digitalWrite(power, LOW);delay(50);}
                   flagpressOLong=flagpressO=false;
                   delay(100);
@@ -69,13 +77,19 @@ void loop() {
   else if(digitalRead(closeSwitchPin) == LOW&&flagpressC==true)//ASAL SWITH HIGH
       { 
                   CSRelease=millis(); 
-                  if(flagpressCLong==false)
+                  if(flagpressCLong==false&&flagJalanC==false)
                     {
                       Serial.println("tekan kejap je Close");
                       digitalWrite(power, HIGH);
                       digitalWrite(change, LOW);
                       flagJalanC=true;
                     }
+                  else if(flagJalanC==true)
+                        {
+                          Serial.println("next tekan close");
+                          digitalWrite(power, LOW);
+                          flagJalanC=false;
+                        }
                   else {Serial.println("open dilepaskan");digitalWrite(power, LOW);}
                   flagpressCLong=flagpressC=false;
                   delay(100);
@@ -87,7 +101,7 @@ void loop() {
         {
          Serial.println("Open lama");
          flagpressOLong=true;
-         flagJalanO==false;
+         flagJalanO=false;
            digitalWrite(power, HIGH);
            digitalWrite(change, HIGH);
         }
@@ -97,12 +111,11 @@ void loop() {
         {
          Serial.println("Close lama");
          flagpressCLong=true;
+         flagJalanC=false;
            digitalWrite(power, HIGH);
            digitalWrite(change, LOW);
         }
         // nk cek tekan close lama ke cepat tamat
-
-    //kija tekan kali ke 2
 
     //ni nak auto tutup ikut masa
     if(flagJalanO==true && millis()-OSPress>masaRun)
