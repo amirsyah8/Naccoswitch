@@ -22,8 +22,8 @@ unsigned long masaRun = 7000;
 void setup() {
   Serial.begin(9600);
   Serial.println("Directed by amirshah");
-  pinMode(openSwitchPin, INPUT_PULLUP);
-  pinMode(closeSwitchPin, INPUT_PULLUP);/// openSwitchPin = LOW = TEKAN
+  pinMode(openSwitchPin, INPUT);
+  pinMode(closeSwitchPin, INPUT);/// openSwitchPin = LOW = TEKAN, DAH TUKAR
 
   pinMode(change, OUTPUT); // Define and set change pin as an output CLOSE = LOW, 
   pinMode(power, OUTPUT);  // Define and set power pin as an output
@@ -32,7 +32,7 @@ void setup() {
 void loop() {
 
   // ni untuk open button start
-  if (digitalRead(openSwitchPin) == LOW&&flagpressO==false) 
+  if (digitalRead(openSwitchPin) == HIGH&&flagpressO==false) //ASAL SWITH LOW
         {
           Serial.println("Tekan open");
           OSPress = millis(); //simpan masa mula
@@ -41,7 +41,7 @@ void loop() {
           flagpressC = flagpressOLong= false; // flase kan semua
           delay(100);
         }
-  else if (digitalRead(openSwitchPin) == HIGH&&flagpressO==true)
+  else if (digitalRead(openSwitchPin) == LOW &&flagpressO==true)//ASAL SWITH HIGH
        {
                   OSRelease=millis(); 
                   if(flagpressOLong==false)
@@ -57,7 +57,7 @@ void loop() {
        }
   // habis progrman open
   // ni untuk close button start
-  if (digitalRead(closeSwitchPin) == LOW&&flagpressC==false) 
+  if (digitalRead(closeSwitchPin) == HIGH&&flagpressC==false) //ASAL SWITH LOW
       {
           Serial.println("Tekan close");
           CSPress = millis(); //simpan masa mula
@@ -66,7 +66,7 @@ void loop() {
           flagpressO = flagpressCLong=false;
           delay(100);
       }
-  else if(digitalRead(closeSwitchPin) == HIGH&&flagpressC==true)
+  else if(digitalRead(closeSwitchPin) == LOW&&flagpressC==true)//ASAL SWITH HIGH
       { 
                   CSRelease=millis(); 
                   if(flagpressCLong==false)
@@ -101,6 +101,8 @@ void loop() {
            digitalWrite(change, LOW);
         }
         // nk cek tekan close lama ke cepat tamat
+
+    //kija tekan kali ke 2
 
     //ni nak auto tutup ikut masa
     if(flagJalanO==true && millis()-OSPress>masaRun)
